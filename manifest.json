@@ -1,0 +1,17 @@
+{  
+    "name": "Punchcard",
+    "short_name": "Punchcard",  
+    "description": "My work time system",  
+    "start_url": "./index.html",  
+    "icons": [  
+      {  
+        "src": "favicon.png",  
+        "sizes": "512x512",  
+        "type": "image/png"  
+      }  
+    ],  
+    "theme_color": "#acdbdf",  
+    "background_color": "#162447",
+    "display": "fullscreen",  
+    "orientation": "portrait"  
+  }  
