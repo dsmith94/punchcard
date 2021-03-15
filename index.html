@@ -1,0 +1,102 @@
+<html>
+    <head>
+        <title>Punchcard</title>
+        <style>
+            body {
+                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                color: #acdbdf;
+                background-color: #162447;
+            }
+            button {
+                background-color: #162447;
+                border: none;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 30rem;
+                margin: 2rem;
+            }
+            .label {
+                border: none;
+                font-size: 3rem;
+                margin: 2rem;
+            }
+            input {
+                background-color: 'lightgray';
+                border: none;
+                display: inline-block;
+                font-size: 3rem;
+                margin: 2rem;
+            }
+        </style>
+    </head>
+    <body>
+        <button id="punch" onclick="startNow();">⏲</button>
+        <div class="label" id="label"></div>
+        <input placeholder="email to" id="emailInput" onchange="setEmail();"></input>
+
+        <script>
+
+            let started = Date.parse(localStorage.getItem("started"));
+            let email = localStorage.getItem("email");
+
+
+            function setEmail() {
+                const i = document.getElementById("emailInput");
+                localStorage.setItem("email", i.value);
+            }
+
+
+            function stopNow() {
+                localStorage.removeItem('started');
+                const later = new Date();
+                const diff = new Date(later.getTime() - started.getTime());
+                const hours = diff.getUTCHours();
+                const minutes = diff.getUTCMinutes()
+                const seconds = diff.getUTCSeconds();
+                const subject = `Work time report for ${later.toLocaleDateString()}`;
+                const report = `
+Report for work on ${later.toLocaleString()}
+Started at ${started.toTimeString()}
+Punched out at ${later.toTimeString()}
+
+Total time worked was ${hours} hours, ${minutes} minutes, ${seconds} seconds
+`;
+                refresh();
+                document.location.href = "mailto:" + encodeURIComponent(email) + " ?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(report);
+            }
+
+
+            function startNow() {
+                started = new Date();
+                localStorage.setItem("started", started.toString());
+                refresh();
+            }
+
+
+            function refresh() {
+                const b = document.getElementById("punch");
+                const l = document.getElementById("label");
+                b.innerHTML = "🛑";
+                l.innerHTML = `last time at ${started.toLocaleString()}`;
+                b.onclick = () => {stopNow();};
+            }
+
+
+            function onload() {
+                const i = document.getElementById("emailInput");
+                i.value = localStorage.getItem("email");
+                if (started) {
+                    refresh();
+                } else {
+                    const l = document.getElementById("label");
+                    l.innerHTML = `ready;`;
+                }
+            }
+
+            onload();
+
+        </script>
+
+    </body>
+</html>
